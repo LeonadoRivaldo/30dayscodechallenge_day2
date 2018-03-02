@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Angular JS ‘ng-model’ directive in Vanilla JS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style type="text/css">
+            .hash-cell{ width:50px;height:50px; display:flex; }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row" style="margin-top:50px;">
+                <div class="col-xs-12 col-sm">
+                    <div class="card bg-light">
+                        <div class="card-body" id="hash-table"></div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm">
+                    <div class="card bg-light border-info">
+                        <div class="card-body text-info">
+                            <h5 class="card-title">SCORE!</h5>
+                            <!-- <p class="card-text" id="magicTextOutPut"></p> -->
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script type="text/javascript">
+        var hashGame = function(){
+            var _mountCell = function(x,y){
+                var cell = document.createElement("span");
+               cell.classList.add('hash-cell');                
+               cell.classList.add('border');                
+               cell.classList.add('border-dark');                             
+                var classe ="";
+                if( x===1 && y===0 ){
+                    classe = "border-top-0";
+                }else if( x === 0 && y === 1 ){
+                    classe = "border-left-0";
+                }else if( x === 2 && y === 1 ){
+                    classe = "border-right-0";
+                }else if( x === 1 && y === 2 ){
+                    classe = "border-bottom-0";
+                }else{
+                    classe = "border-0";
+                }
+                cell.classList.add(classe); 
+                return cell;
+            }
+
+            var _mountTable = function(tableContainer){
+                for( var y = 0; y<3; y++ ){
+                    for(var x = 0; x<3; x++){
+                        tableContainer.appendChild(_mountCell(x,y));
+                    }   
+                }
+            }
+
+
+            return{
+                mountTable: _mountTable
+            }
+        }();
+
+        hashGame.mountTable(document.getElementById('hash-table'));
+        //continuar
+    </script>
+
+</html>
