@@ -1,0 +1,18 @@
+.hash-row:first-child {
+    margin-bottom: -1px;
+}
+
+.hash-row:last-child {
+    margin-top: -1px;
+}
+
+.hash-cell {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    cursor: pointer;
+}
+
+.hash-cell.border-0 {
+    margin: -1px;
+}
