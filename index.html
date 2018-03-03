@@ -27,8 +27,13 @@
                         <p class="card-text hashplays"><i class="fas fa-hashtag"></i> plays:<span></span></p>
                         <p class="card-text score-times"><i class="fas fa-times"></i> wins:<span></span></p>
                         <p class="card-text score-circle"><i class="far fa-circle"></i> wins:<span></span></p>
-
                     </div>
+                </div>
+                <div class="d-flex justify-content-left" style="margin-top:10px;">
+                    <button class="btn btn-info border-info" onclick="restart()">Resete</button>
+                </div>
+                <div class="d-flex justify-content-left" style="margin-top:10px;" id="winner">
+                    <p class="h5">Vencedor: </p>
                 </div>
             </div>
         </div>
@@ -37,16 +42,39 @@
 <script type="text/javascript" src="./main.js"></script>
 
 <script type="text/javascript">
+    var counters = function(hashplays, scoreCircle, scoretimes, game) {
+        hashplays.innerHTML = " " + game.totalGames;
+        scoreCircle.innerHTML = " " + game.oWins;
+        scoretimes.innerHTML = " " + game.xWins;
+    }
+    
+    var restart = function(){
+        table.innerHTML = "";
+        game.start(table);
+    }
+    
     //scores!
+
+    
     var hashplays = document.querySelector('.hashplays span');
     var scoreCircle = document.querySelector('.score-circle span');
     var scoretimes = document.querySelector('.score-times span');
+    var table = document.getElementById('hash-table');
     var game = hashGame();
-    game.start(document.getElementById('hash-table'));
+    game.start(table);
+    counters(hashplays, scoreCircle, scoretimes, game);
 
-    hashplays.innerHTML = " " + game.totalGames;
-    scoreCircle.innerHTML = " " + game.oWins;
-    scoretimes.innerHTML = " " + game.xWins;
+    document.addEventListener('gameEvent', function(event){
+        event.stopPropagation();
+        counters(hashplays, scoreCircle, scoretimes, event.gameStatus);
+        var icone = event.gameStatus.winner === 'x' ? "fas fa-times" : "far fa-circle";
+        var html =  "<i class='" + icone + "'></i>";
+        html = event.gameStatus.winner !== 'draw' ? html : " Empate";
+        setTimeout(function(){
+            document.querySelector('#winner .h5').innerHTML = "Vencedor: "+html;
+        }, 100);
+        restart();
+    });
 
     //continuar
 </script>

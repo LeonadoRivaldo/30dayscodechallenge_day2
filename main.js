@@ -7,11 +7,18 @@ var addClass = function(classe, element) {
 
 var hashGame = function() {
 
-    var _matrix = [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0]
-    ];
+    var createMatrix = function(){
+        return[
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+    }
+
+    var gameEvent =  new Event("gameEvent", {"bubbles":true, "cancelable":true});
+    var _table;
+
+    var _matrix;
 
     var games = 0;
     var xWins = 0;
@@ -20,28 +27,61 @@ var hashGame = function() {
     var _turn;
     var xClass = "fas fa-times";
     var oClass = "far fa-circle";
+    var totalplays = 0;
 
 
-    //0,0 [[{x:0,y:0},{x:1,y:0},{x:2,y:0}],[{x:0,y:0},{x:1,y:1},{x:2,y:2}],[{x:0,y:1},{x:0,y:1},{x:0,y:2}]]
-    //1,0 [[{x:0,y:0},{x:1,y:0},{x:2,y:0}],[{x:1,y:0},{x:1,y:1},{x:1,y:2}]]
-    //2,0 [[{x:0,y:0},{x:1,y:0},{x:2,y:0}],[{x:2,y:0},{x:1,y:1},{x:0,y:2}],[{x:2,y:0},{x:2,y:1},{x:2,y:2}]
 
-    //continuar desenhar
-    //0,1 
-    //1,1 
-    //2,1
-
-    //0,2
-    //1,2
-    //2,2
-
-    //
+    //verifica vitoria
     var _checkVitory = function() {
-        var padroes = []
+        var padroes = [[{x:0,y:0},{x:1,y:0},{x:2,y:0}],
+            [{x:0,y:0},{x:1,y:1},{x:2,y:2}],
+            [{x:0,y:0},{x:0,y:1},{x:0,y:2}],
+            [{x:1,y:0},{x:1,y:1},{x:1,y:2}],
+            [{x:2,y:0},{x:1,y:1},{x:0,y:2}],
+            [{x:2,y:0},{x:2,y:1},{x:2,y:2}],
+            [{x:0,y:1},{x:1,y:1},{x:2,y:1}],
+            [{x:0,y:2},{x:1,y:2},{x:2,y:2}],
+            [{x:0,y:2},{x:1,y:2},{x:2,y:2}]];
+        padroes.forEach(function(padrao){
+            if( _matrix[padrao[0].y][padrao[0].x] != 0 ){
+                var testfor =  _turn === xClass ? 'x' : 'o';
+                var array = [];
+                array.push(_matrix[padrao[0].y][padrao[0].x]);
+                array.push(_matrix[padrao[1].y][padrao[1].x]);    
+                array.push(_matrix[padrao[2].y][padrao[2].x]);
+                var isAllNotEqual = array.some(function(n){return n!==testfor});
+                if( !isAllNotEqual ){
+                    games++;
+                    _turn === xClass ? xWins++ : oWins++;
+                    gameEvent.gameStatus = {
+                        xWins: xWins,
+                        oWins: oWins,
+                        totalGames: games,
+                        winner: testfor
+                    }
+                    document.dispatchEvent(gameEvent);
+                }else{
+                    //maybe?
+                }
+            }
+        });
+
     }
 
     //jogadas
+
     var _play = function(elem) {
+        if(totalplays === 8 ){
+            games++;
+            gameEvent.gameStatus = {
+                xWins: xWins,
+                oWins: oWins,
+                totalGames: games,
+                winner:'draw'
+            }            
+            document.dispatchEvent(gameEvent);
+        }
+
         var x = elem.matrixPos.x;
         var y = elem.matrixPos.y;
         if (_matrix[y][x] === 0) {
@@ -54,13 +94,14 @@ var hashGame = function() {
             var html = "<i class='" + _turn + "'></i>";
             _matrix[y][x] = _turn === xClass ? 'x' : 'o';
             elem.innerHTML = html;
+            totalplays++;
+            setTimeout(_checkVitory, 100);
         } else {
-            alert("não!");
         }
 
         // console.table(_matrix);
         //check for end
-
+        
     }
 
     //monta a celula do jogo
@@ -89,6 +130,7 @@ var hashGame = function() {
 
     //monta o tabuleiro
     var _mountTable = function(tableContainer) {
+        _table = tableContainer;
         for (var y = 0; y < 3; y++) {
             var row = document.createElement("div");
             addClass("hash-row d-flex justify-content-center", row);
@@ -97,6 +139,8 @@ var hashGame = function() {
             }
             tableContainer.appendChild(row);
         }
+        _matrix = createMatrix();
+        totalplays = 0;
     }
 
 
